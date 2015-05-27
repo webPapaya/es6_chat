@@ -1,0 +1,25 @@
+{
+  "name": "es6_chat",
+  "version": "0.0.1",
+  "description": "This is a javascript implementation of an chat using react, flux and es6",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/webPapaya/es6_chat.git"
+  },
+  "keywords": [
+    "ES6",
+    "Chat",
+    "NodeJS",
+    "React",
+    "Flux"
+  ],
+  "author": "Thomas Mayrhofer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/webPapaya/es6_chat/issues"
+  }
+}
