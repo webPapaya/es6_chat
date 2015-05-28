@@ -6,6 +6,9 @@ var babelify    = require('babelify');
 var source      = require('vinyl-source-stream');
 var plugins     = require('gulp-load-plugins')();
 
+var spawn = require('child_process').spawn;
+var node;
+
 var frontendDirs = {
     src:     './source/frontend/',
     srcJS:   './source/frontend/js/',
@@ -16,6 +19,13 @@ var frontendDirs = {
     dist:    './dist/frontend/',
     distJS:  './dist/frontend/js/',
     distCSS: './dist/frontend/css/',
+    test:    './test/'
+};
+
+var backendDirs = {
+    src:     './source/backend/',
+    tmp:     './tmp/backend/',
+    dist:    './dist/backend/',
     test:    './test/'
 };
 
@@ -33,6 +43,23 @@ gulp.task('transpile-js', function() {
     .pipe(gulp.dest(frontendDirs.tmpJS))
     .pipe(plugins.livereload())
 });
+
+gulp.task('serve-backend', function() {
+    if (node) node.kill()
+    node = spawn('node', [backendDirs.tmp + 'app.js'], {stdio: 'inherit'})
+    node.on('close', function (code) {
+        if (code === 8) {
+            console.log('Error detected, waiting for changes...');
+        }
+    });
+});
+
+gulp.task('transpile-backend', function() {
+    return gulp.src(backendDirs.src + 'app.js')
+        .pipe(plugins.babel())
+        .pipe(gulp.dest(backendDirs.tmp))
+});
+
 
 // Reload the HTML
 gulp.task('transpile-html', function() {
@@ -57,7 +84,7 @@ gulp.task('watch', function () {
     plugins.livereload.listen();
     plugins.connect.server({
         root: [frontendDirs.tmp, frontendDirs.src],
-        port: 8080,
+        port:       8080,
         livereload: true
     });
 
@@ -69,7 +96,17 @@ gulp.task('watch', function () {
     gulp.watch(frontendDirs.src + 'source/**/*.less', ['transpile-css']);
 });
 
-gulp.task('default',     ['transpile-js', 'transpile-css', 'transpile-html', 'watch']);
+gulp.task('watch-backend', function() {
+    gulp.watch(backendDirs.src + '/**/*.js',   ['transpile-backend']);
+    gulp.watch(backendDirs.tmp + 'app.js',   ['serve-backend']);
+});
+
+gulp.task('frontend', ['transpile-js', 'transpile-css', 'transpile-html', 'watch']);
+gulp.task('backend',  ['transpile-backend', 'serve-backend', 'watch-backend']);
+
+gulp.task('default',   ['backend', 'frontend']);
+
+
 gulp.task('watch-tests', function() {
     gulp.watch([
             frontendDirs.src + '**/*.js',

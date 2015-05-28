@@ -1,8 +1,14 @@
-import React from 'react';
+import React     from 'react';
+import ChatInput from './chat_input';
 
-class HelloMessage extends React.Component {
+class ChatWindow extends React.Component {
     render() {
-        return <div>Chat Window</div>;
+        return(
+            <div>
+                <ChatInput />
+            </div>
+        );
     }
 }
 
+export default ChatWindow;
