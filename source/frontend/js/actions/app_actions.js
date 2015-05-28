@@ -4,22 +4,14 @@ import AppDispatcher from '../dispatcher/app_dispatcher'
 import Ajax          from 'simple-ajax'
 
 var AppActions = {
-    create: function(counts) {
+    handleMessage: function(message) {
         AppDispatcher.dispatch({
-            actionType: 'create',
-            text: counts
+            actionType: 'handleMessage',
+            payload:    {
+                date:    (new Date()),
+                message: message
+            }
         });
-    },
-    loadJSON: function() {
-        var request = new Ajax('http://jsonplaceholder.typicode.com/posts');
-        request.on('success', function(event) {
-            var response = JSON.parse(event.target.response);
-            AppDispatcher.dispatch({
-                actionType: 'loadedPosts',
-                text: response
-            });
-        });
-        request.send();
     }
 };
 

@@ -56,6 +56,7 @@ gulp.task('serve-backend', function() {
 
 gulp.task('transpile-backend', function() {
     return gulp.src(backendDirs.src + 'app.js')
+        .pipe(plugins.plumber())
         .pipe(plugins.babel())
         .pipe(gulp.dest(backendDirs.tmp))
 });
