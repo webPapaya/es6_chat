@@ -1,9 +1,22 @@
+import hash from './lib/hash';
+
 let rooms = [];
 
 class Room {
     constructor(name) {
-        this._name = name
+        if(Room.findByName(name).length > 0) {
+            throw new Error(`A room called '${name}' already exists.`)
+        }
+
+        this._name = name;
         this._users = [];
+        this._id = hash(name);
+
+        Room._add(this);
+    }
+
+    get id() {
+        return this._id;
     }
 
     get name() {
@@ -16,15 +29,33 @@ class Room {
 
     json() {
         return {
-            name: this.name
+            name: this.name,
+            id: this.id
         }
     }
 
     static all() {
+        return rooms;
+    }
+
+    static allJson() {
         return rooms.map(function(room) {
-                return room.json();
-            }
-        );
+            return room.json();
+        });
+    }
+
+    static new(name) {
+        return new this(name);
+    }
+
+    static findByName(name) {
+        return this.all().filter(function(room) {
+            return room.name === name;
+        });
+    }
+
+    static _add(room) {
+        rooms.push[room];
     }
 }
 
