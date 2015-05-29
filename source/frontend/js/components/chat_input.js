@@ -14,8 +14,8 @@ class ChatInput extends React.Component {
     }
 
     _submit () {
-        AppActions.handleMessage(this.state.value);
-        this.setState({value: ''})
+        this.props.submitCallback(this.state.value);
+        this.setState({value: ''});
     }
 
 

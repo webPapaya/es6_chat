@@ -1,13 +1,27 @@
+"use strict";
+
 import React      from 'react';
+
+// Components
 import ChatInput  from './chat_input';
 import ChatThread from './chat_thread';
-import ChatStore  from '../stores/chat_store';
+
+// Actions
+import AppActions from '../actions/app_actions';
+
+
 
 class ChatWindow extends React.Component {
+    _addMessage(value) {
+        AppActions.handleMessage(value);
+    }
+
     render() {
         return(
             <div>
-                <ChatInput />
+                <ChatInput
+                    submitCallback={this._addMessage.bind(this)}
+                />
                 <ChatThread />
             </div>
         );

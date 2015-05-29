@@ -7,7 +7,7 @@ import AppActions from '../actions/app_actions';
 class ChatThread extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {messages: []};
+        this.state = {messages: ChatStore.getMessages()};
     }
 
     componentDidMount() {
@@ -15,7 +15,7 @@ class ChatThread extends React.Component {
     }
 
     componentWillUnmount() {
-        ChatStore.removeListener(this._newMessage.bind(this));
+        ChatStore.removeChangeListener();
     }
 
     _newMessage() {
@@ -24,7 +24,7 @@ class ChatThread extends React.Component {
         });
     }
 
-    formatMessages() {
+    _formatMessages() {
         return this.state.messages.map(function(item) {
             return <li>{item.date.toLocaleTimeString()} - {item.message}</li>
         });
@@ -33,7 +33,7 @@ class ChatThread extends React.Component {
     render() {
         return(
             <ul>
-                {this.formatMessages()}
+                {this._formatMessages()}
             </ul>
         );
     }
