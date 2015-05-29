@@ -18,8 +18,8 @@ var AppActions = {
         AppDispatcher.dispatch({
             actionType: 'addChatRoom',
             payload:    {
-                date:    new Date(),
-                message: name
+                date:  new Date(),
+                name:  name
             }
         });
     }

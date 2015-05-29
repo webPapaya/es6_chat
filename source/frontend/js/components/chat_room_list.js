@@ -23,10 +23,16 @@ class ChatInput extends React.Component {
         ChatStore.removeChangeListener();
     }
 
+    _formatMessages() {
+        return this.state.rooms.map(function(item) {
+            return <li>{item.name}</li>
+        });
+    }
+
     render() {
         return(
             <div>
-                {this.state.rooms}
+                {this._formatMessages()}
             </div>
         );
     }
