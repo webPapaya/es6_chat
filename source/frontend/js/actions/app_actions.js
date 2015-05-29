@@ -8,7 +8,7 @@ var AppActions = {
         AppDispatcher.dispatch({
             actionType: 'handleMessage',
             payload:    {
-                date:    (new Date()),
+                date:    new Date(),
                 message: message
             }
         });
