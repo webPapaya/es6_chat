@@ -25,8 +25,9 @@ var frontendDirs = {
 var backendDirs = {
     src:     './source/backend/',
     tmp:     './tmp/backend/',
+    tmpJs:     './tmp/backend/js/',
     dist:    './dist/backend/',
-    test:    './test/'
+    spec:    './tmp/backend/spec/'
 };
 
 // Transpile ES6 and React Components and
@@ -45,8 +46,8 @@ gulp.task('transpile-js', function() {
 });
 
 gulp.task('serve-backend', function() {
-    if (node) node.kill()
-    node = spawn('node', [backendDirs.tmp + 'app.js'], {stdio: 'inherit'})
+    if(node) return;
+    node = spawn('node', [backendDirs.tmpJs + 'app.js'], {stdio: 'inherit'});
     node.on('close', function (code) {
         if (code === 8) {
             console.log('Error detected, waiting for changes...');
@@ -55,12 +56,11 @@ gulp.task('serve-backend', function() {
 });
 
 gulp.task('transpile-backend', function() {
-    return gulp.src(backendDirs.src + 'app.js')
+    return gulp.src(backendDirs.src + '**/*.js')
         .pipe(plugins.plumber())
         .pipe(plugins.babel())
         .pipe(gulp.dest(backendDirs.tmp))
 });
-
 
 // Reload the HTML
 gulp.task('transpile-html', function() {
@@ -81,6 +81,12 @@ gulp.task('test', function () {
         .pipe(plugins.livereload());
 });
 
+
+gulp.task('test-backend', function() {
+   return gulp.src(backendDirs.tmp + 'spec/**/*.js')
+    .pipe(plugins.mocha({reporter: 'nyan'}));
+});
+
 gulp.task('watch', function () {
     plugins.livereload.listen();
     plugins.connect.server({
@@ -99,7 +105,8 @@ gulp.task('watch', function () {
 
 gulp.task('watch-backend', function() {
     gulp.watch(backendDirs.src + '/**/*.js',   ['transpile-backend']);
-    gulp.watch(backendDirs.tmp + 'app.js',   ['serve-backend']);
+    gulp.watch(backendDirs.tmpJs + 'app.js',   ['serve-backend']);
+    gulp.watch(backendDirs.tmp + '**/*.js',   ['test-backend']);
 });
 
 gulp.task('frontend', ['transpile-js', 'transpile-css', 'transpile-html', 'watch']);
