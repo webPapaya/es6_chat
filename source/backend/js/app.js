@@ -1,9 +1,15 @@
 import express from 'express';
+import Room from './room';
+
 var app     = express();
+
 
 app.get('/', function (req, res) {
     res.send('Hello!');
+});
 
+app.get('/rooms', function (req, res) {
+   res.send(Room.all());
 });
 
 var server = app.listen(81818, function () {
