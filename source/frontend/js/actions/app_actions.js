@@ -12,6 +12,16 @@ var AppActions = {
                 message: message
             }
         });
+    },
+
+    addChatRoom: function(name) {
+        AppDispatcher.dispatch({
+            actionType: 'addChatRoom',
+            payload:    {
+                date:  new Date(),
+                name:  name
+            }
+        });
     }
 };
 
