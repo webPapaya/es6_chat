@@ -21,6 +21,7 @@
 // Post
 {
 	userId: String,
+	roomId: String,
 	message: String
 }
 
