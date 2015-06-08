@@ -1,5 +1,6 @@
 import express from 'express';
-import Room from './room'
+import Room from './room';
+import db from './db';
 
 var app     = express();
 

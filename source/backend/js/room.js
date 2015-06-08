@@ -1,4 +1,6 @@
 import hash from './lib/hash';
+import 'mongoskin';
+import db from './db.js';
 
 let rooms = [];
 
@@ -9,10 +11,15 @@ class Room {
         }
 
         this._name = name;
+        this._default = (Room.all().length === 0);
         this._users = [];
         this._id = hash(name);
 
         Room._add(this);
+    }
+
+    get default() {
+        return this._default;
     }
 
     get id() {
@@ -35,6 +42,14 @@ class Room {
     }
 
     static all() {
+        //let rooms = db.collection('rooms').find().toArray(function(err, result) {
+        //    if (err) throw err;
+        //    return result;
+        //
+        //});
+        //console.log(rooms);
+
+
         return rooms;
     }
 
@@ -55,10 +70,16 @@ class Room {
     }
 
     static _add(room) {
-        rooms.push[room];
+        db.collection
+    }
+
+    static default() {
+        let defaults = this.all().filter(function(room) {
+            return room.default
+        })
+
+        return defaults[0]
     }
 }
-
-rooms.push(new Room('Room 1'), new Room('Room 2'), new Room('Room 3'));
 
 export default Room;

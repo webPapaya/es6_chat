@@ -44,6 +44,14 @@ describe('A new room', function(){
     })
 });
 
+describe('First initialized room', function() {
+    let defaultRoom = Room.findByName("Room 1")[0]
+
+    it('should be returned as default', function() {
+        expect(Room.default()).to.be(defaultRoom);
+    })
+});
+
 describe('List of rooms', function() {
   it('should contain 3 rooms', function() {
      expect(Room.all().length).to.be(3);
