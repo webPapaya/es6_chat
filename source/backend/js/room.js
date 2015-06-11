@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 let { Schema } = mongoose;
 import Promise from 'promise'
 import User from './user'
+import io from 'socket.io';
 
 
 let RoomSchema = new Schema({
@@ -13,8 +14,8 @@ let RoomModel = mongoose.model('Room', RoomSchema)
 
 class Room {
     constructor(dbRecord) {
-        this._record = dbRecord
-
+        this._record =  dbRecord;
+        this._users =   [];
     }
 
     get name() {
@@ -29,25 +30,68 @@ class Room {
         return this._record.default;
     }
 
+    get slug() {
+        return `/${this.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')}`;
+
+    }
+
     json() {
         return {
-            id: this.id,
-            name: this.name
+            id:     this.id,
+            slug:   this.slug,
+            name:   this.name
         };
     }
 
+    users() {
+        return this._users;
+    }
 
-    save(cb) {
-        this._record.save(function (err) {
-            cb(err)
+    listen(port) {
+        this.chat = io(port)
+            .of(this.slug)
+            .on('connection', this.handleConnection)
+    }
+
+    handleConnection(socket) {
+        let id = socket.id,
+            user = User.new(id, this);
+
+        this.enter(user);
+
+        socket.on('disconnect', function() {
+            this.leave(user);
+        })
+
+        socket.on('message', function(msg) {
+            this.message(msg, socket)
         })
     }
 
-    users(cb) {
-        User.findByRoom(this)
-            .then(function(users) {
-                cb(users);
-            });
+    enter(user) {
+        this.emit(`# User ${user.name} connected.`);
+        return this._users.push(user);
+    }
+
+    leave(user) {
+        this.emit(`# User ${user.name} disconnected.`);
+        let idx = this._users.indexOf(user);
+        if(idx > -1) {
+            return this._users.splice(idx, 1);
+        }
+    }
+
+    emit(msg) {
+        if(this.chat) {
+            return this.chat.emit(msg);
+        } else {
+            return false;
+        }
+    }
+
+    message(msg, socket) {
+        let sender = this.userForSocket(socket);
+        this.chat.emit(`${sender.name}: ${msg}`);
     }
 
     static create(name, isDefault) {
@@ -64,42 +108,35 @@ class Room {
         });
     }
 
-    static all(cb) {
-        RoomModel.find(function(err, rooms) {
-            rooms = rooms.map(function(rec) {
-                return new Room(rec)
-            })
-
-            cb(rooms, err)
-        });
-    }
-
-    static allJson(cb) {
-        this.all(function(rooms) {
-            let jsonRooms = rooms.map(function(room) {
-                return room.json()
-            })
-
-            cb(jsonRooms)
-        });
-    }
-
-    static find(id) {
+    static all() {
         return new Promise(function(resolve, reject) {
-            RoomModel.findById(id, function(err, roomRecord) {
+            RoomModel.find(function(err, rooms) {
+                rooms = rooms.map(function(rec) {
+                    return new Room(rec)
+                });
+
                 if(!err) {
-                    let room = new Room(roomRecord);
-                    resolve(room);
+                    return resolve(rooms);
                 } else {
-                    reject(err)
+                    return reject(err);
                 }
-            })
+            });
         })
     }
 
-    static default(cb) {
-        RoomModel.findOne({ default: true }, function(err, room) {
-            cb(room, err)
+    static allJson() {
+        return new Promise(function(resolve, reject) {
+            Room.all()
+                .then(function(rooms) {
+                    let jsonRooms = rooms.map(function(room) {
+                        return room.json()
+                    })
+
+                    resolve(jsonRooms);
+                })
+                .catch(function(err) {
+                    reject(err);
+                });
         })
     }
 }

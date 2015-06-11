@@ -1,45 +1,34 @@
-import mongoose from 'mongoose'
-let { Schema } = mongoose;
 import Promise from 'promise';
 import Room from './room';
 
-let UserSchema = new Schema({
-    name: { type: String, default: `User-${Date.now()}` },
-    roomId: { type: String }
-})
-let UserModel = mongoose.model('User', UserSchema)
-
 class User {
-    constructor(record) {
-        this._record = record
+    constructor(id, room, name=undefined) {
+        this._id   = id;
+        this._room = room;
+        this._name = name || `User-${Date.now()}`;
     }
 
     get id() {
-        return this._record.id;
+        return this.id;
     }
 
     get name() {
-        return this._record.name;
+        return this._name;
     }
 
     get room() {
-        return Room.find(this._record.id)
+        return this._room;
     }
 
     json() {
         return {
-            id: this._record.id,
-            name: this._record.name
+            id:     this.id,
+            name:   this.name,
+            room:   this.room.name
         }
     }
 
-    static initRecords(users) {
-        return users.map(function(userRecord) {
-            return new User(userRecord)
-        })
-    }
-
-    static create(name, room) {
+    static create(name, room, socket) {
         let roomId = room instanceof Room ? room.id : room
         let record = new UserModel({ name: name, roomId: roomId })
 
@@ -54,7 +43,7 @@ class User {
         })
     }
 
-    static all(cb) {
+    static all() {
         UserModel.find(function(err, users) {
             users = users.map(function(user) { return new User(user) })
             cb(users, err)
@@ -66,25 +55,6 @@ class User {
             let jsonUsers = users.map(function(user) { return user.json() })
             cb(jsonUsers)
         })
-    }
-
-    static findByName(name, cb) {
-        return UserModel.find({name: name}, function(err, users) {
-            cb(users);
-        });
-    }
-
-    static findByRoom(room) {
-        return new Promise(function(resolve, reject) {
-            UserModel.find({roomId: room.id}, function(err, userRecords) {
-                if(!err) {
-                    let users = User.initRecords(userRecords)
-                    resolve(users)
-                } else {
-                    reject(err);
-                }
-            })
-        });
     }
 
     static removeAll(cb = function(){}) {

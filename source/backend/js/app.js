@@ -9,23 +9,25 @@ import User from './user';
 import Controller from './controller';
 
 let app = express();
-let io = socket.listen(1337);
-let appController = new Controller();
 
 mongoose.connect(db.development);
 
-app.get('/',                appController.roomsIndex);
-app.get('/rooms',           appController.roomsIndex);
-app.get('/rooms/:id/users', appController.roomUsers);
-app.get('/users',           appController.usersIndex);
+Room.all().then(function(rooms) {
+    rooms.forEach(function(room) {
+        room.listen(1337);
+    });
 
-io.on("connection", function(socket){
-    console.log(socket)
-});
+    let appController = new Controller(rooms);
 
-let server = app.listen(3030, function () {
-    var host = server.address().address;
-    var port = server.address().port;
+    app.get('/',                appController.roomsIndex);
+    app.get('/rooms',           appController.roomsIndex);
+    app.get('/rooms/:id/users', appController.roomUsers);
+    app.get('/users',           appController.usersIndex);
 
-    console.log('Chat application listening at http://%s:%s', host, port);
+    let server = app.listen(4040, function () {
+        var host = server.address().address;
+        var port = server.address().port;
+
+        console.log('Chat application listening at http://%s:%s', host, port);
+    });
 });

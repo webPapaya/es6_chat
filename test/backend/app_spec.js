@@ -1,5 +1,4 @@
-var assert = require("assert"),
-    expect = require("expect.js");
+var expect = require("expect.js");
 
 var mongoose =  require("mongoose"),
     db =        require("../../tmp/backend/js/config/config").db,
