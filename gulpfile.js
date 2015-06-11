@@ -122,6 +122,7 @@ gulp.task('watch', function () {
 
 gulp.task('watch-backend', function() {
     console.log('--running watch-backend--');
+    gulp.watch(backendDirs.src + '**/*.js', ['transpile-backend']);
     gulp.watch(backendDirs.tmp + '**/*.js',   ['test']);
 });
 
