@@ -13,17 +13,12 @@ import AppStore   from '../stores/chat_store';
 import RoomStore  from '../stores/room_store';
 
 class ChatWindow extends React.Component {
-    constructor (props) {
-        debugger;
-        super(props);
+    static willTransitionTo (transition, params) {
+        AppActions.changeRoom(parseInt(params.id));
     }
 
     _addMessage(value) {
         AppActions.handleMessage(this.props.params.id, value);
-    }
-
-    static willTransitionTo (transition, params) {
-        AppActions.changeRoom(parseInt(params.id));
     }
 
     render() {
