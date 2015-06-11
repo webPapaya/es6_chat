@@ -26,7 +26,7 @@ class ChatInput extends React.Component {
         RoomStore.removeChangeListener();
     }
 
-    _formatMessages() {
+    _formatRooms() {
         return this.state.rooms.map(function(item) {
             return(
                 <li>
@@ -39,10 +39,9 @@ class ChatInput extends React.Component {
     }
 
     render() {
-
         return(
             <div>
-                {this._formatMessages()}
+                {this._formatRooms()}
             </div>
         );
     }
