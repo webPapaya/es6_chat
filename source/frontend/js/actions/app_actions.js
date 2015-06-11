@@ -2,6 +2,7 @@
 
 import AppDispatcher from '../dispatcher/app_dispatcher'
 import Ajax          from 'simple-ajax'
+import Validations   from '../validations/validations'
 
 var AppActions = {
     changeUserName: function(name) {
@@ -25,13 +26,25 @@ var AppActions = {
     },
 
     addChatRoom: function(name) {
-        AppDispatcher.dispatch({
-            actionType: 'addChatRoom',
-            payload:    {
-                date:  new Date(),
-                name:  name
-            }
-        });
+        if(Validations.isRoomNameUnique(name)) {
+            AppDispatcher.dispatch({
+                actionType: 'addChatRoom',
+                payload:    {
+                    date:  new Date(),
+                    name:  name
+                }
+            });
+        } else {
+            AppDispatcher.dispatch({
+                actionType: 'error',
+                payload: {
+                    date:    new Date(),
+                    type:    'validation',
+                    action:  'addChatRoom',
+                    message: name + ' is not a unique room name'
+                }
+            });
+        }
     },
 
     changeRoom: function(roomId) {
@@ -40,6 +53,18 @@ var AppActions = {
             payload:    {
                 date:  new Date(),
                 roomId:  roomId
+            }
+        });
+    },
+
+    error: function(type, store, message = "An Error occured") {
+        AppDispatcher.dispatch({
+            actionType: 'error',
+            payload:    {
+                date:    new Date(),
+                type:    type,
+                store:   store,
+                message: message
             }
         });
     }

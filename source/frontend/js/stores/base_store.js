@@ -14,6 +14,18 @@ let BaseStore = assign({}, EventEmitter.prototype, {
 
     emitChange() {
         this.emit('change');
+    },
+
+    addErrorListener(callback) {
+        this.on('error', callback);
+    },
+
+    removeErrorListener() {
+        this.removeAllListeners('error');
+    },
+
+    emitError(payload) {
+        this.emit('error', payload)
     }
 });
 
