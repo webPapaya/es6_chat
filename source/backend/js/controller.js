@@ -2,10 +2,6 @@ import Room from './room'
 import User from './user'
 
 class Controller {
-    constructor(rooms) {
-        this._rooms = rooms;
-    }
-
     roomsIndex (_, res) {
         Room.allJson().then(function(rooms) {
                 res.json(rooms)
@@ -26,10 +22,6 @@ class Controller {
                 res.json(users)
             }
         )
-    }
-
-    newConnection (socket) {
-        User.create()
     }
 }
 
