@@ -1,84 +1,106 @@
-import hash from './lib/hash';
-import 'mongoskin';
-import db from './db.js';
+import mongoose from 'mongoose';
+let { Schema } = mongoose;
+import Promise from 'promise'
+import User from './user'
 
-let rooms = [];
+
+let RoomSchema = new Schema({
+    name: { type: String, index: { unique: true }, default: `Room-${Date.now()}` },
+    default: { type: Boolean, default: false }
+})
+
+let RoomModel = mongoose.model('Room', RoomSchema)
 
 class Room {
-    constructor(name) {
-        if(Room.findByName(name).length > 0) {
-            throw new Error(`A room called '${name}' already exists.`)
-        }
+    constructor(dbRecord) {
+        this._record = dbRecord
 
-        this._name = name;
-        this._default = (Room.all().length === 0);
-        this._users = [];
-        this._id = hash(name);
-
-        Room._add(this);
-    }
-
-    get default() {
-        return this._default;
-    }
-
-    get id() {
-        return this._id;
     }
 
     get name() {
-        return this._name;
+        return this._record.name;
     }
 
-    get users() {
-        return this._users;
+    get id() {
+        return this._record.id;
+    }
+
+    get default() {
+        return this._record.default;
     }
 
     json() {
         return {
-            name: this.name,
-            id: this.id
-        }
+            id: this.id,
+            name: this.name
+        };
     }
 
-    static all() {
-        //let rooms = db.collection('rooms').find().toArray(function(err, result) {
-        //    if (err) throw err;
-        //    return result;
-        //
-        //});
-        //console.log(rooms);
 
-
-        return rooms;
-    }
-
-    static allJson() {
-        return rooms.map(function(room) {
-            return room.json();
-        });
-    }
-
-    static new(name) {
-        return new this(name);
-    }
-
-    static findByName(name) {
-        return this.all().filter(function(room) {
-            return room.name === name;
-        });
-    }
-
-    static _add(room) {
-        db.collection
-    }
-
-    static default() {
-        let defaults = this.all().filter(function(room) {
-            return room.default
+    save(cb) {
+        this._record.save(function (err) {
+            cb(err)
         })
+    }
 
-        return defaults[0]
+    users(cb) {
+        User.findByRoom(this)
+            .then(function(users) {
+                cb(users);
+            });
+    }
+
+    static create(name, isDefault) {
+        let record = new RoomModel({name: name, default: isDefault})
+
+        return new Promise(function(resolve, reject) {
+            record.save(function(err) {
+                if(!err) {
+                    return resolve(new Room(record));
+                } else {
+                    return reject(err);
+                }
+            });
+        });
+    }
+
+    static all(cb) {
+        RoomModel.find(function(err, rooms) {
+            rooms = rooms.map(function(rec) {
+                return new Room(rec)
+            })
+
+            cb(rooms, err)
+        });
+    }
+
+    static allJson(cb) {
+        this.all(function(rooms) {
+            let jsonRooms = rooms.map(function(room) {
+                return room.json()
+            })
+
+            cb(jsonRooms)
+        });
+    }
+
+    static find(id) {
+        return new Promise(function(resolve, reject) {
+            RoomModel.findById(id, function(err, roomRecord) {
+                if(!err) {
+                    let room = new Room(roomRecord);
+                    resolve(room);
+                } else {
+                    reject(err)
+                }
+            })
+        })
+    }
+
+    static default(cb) {
+        RoomModel.findOne({ default: true }, function(err, room) {
+            cb(room, err)
+        })
     }
 }
 

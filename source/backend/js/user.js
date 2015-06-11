@@ -1,55 +1,94 @@
-import hash from './lib/hash';
+import mongoose from 'mongoose'
+let { Schema } = mongoose;
+import Promise from 'promise';
 import Room from './room';
 
-let _users = []
+let UserSchema = new Schema({
+    name: { type: String, default: `User-${Date.now()}` },
+    roomId: { type: String }
+})
+let UserModel = mongoose.model('User', UserSchema)
 
 class User {
-    constructor(name) {
-        if(User.findByName(name).length > 0) {
-            throw new Error(`A user called '${name}' already exists.`)
-        }
-
-        this._name = name;
-        this._id = hash(name);
-
-        User._add(this);
+    constructor(record) {
+        this._record = record
     }
 
     get id() {
-        return this._id;
+        return this._record.id;
     }
 
     get name() {
-        return this._name;
+        return this._record.name;
+    }
+
+    get room() {
+        return Room.find(this._record.id)
     }
 
     json() {
         return {
-            name: this.name,
-            id: this.id
+            id: this._record.id,
+            name: this._record.name
         }
     }
 
-    static new(name) {
-        return new this(name);
+    static initRecords(users) {
+        return users.map(function(userRecord) {
+            return new User(userRecord)
+        })
     }
 
-    static all() {
-        return _users
+    static create(name, room) {
+        let roomId = room instanceof Room ? room.id : room
+        let record = new UserModel({ name: name, roomId: roomId })
+
+        return new Promise(function(resolve, reject) {
+            record.save(function(err) {
+                if(!err) {
+                    return resolve(new User(record));
+                } else {
+                    return reject(err);
+                }
+            })
+        })
     }
 
-    static findByName(name) {
-        return this.all().filter(function(user) {
-            return user.name === name;
+    static all(cb) {
+        UserModel.find(function(err, users) {
+            users = users.map(function(user) { return new User(user) })
+            cb(users, err)
         });
     }
 
-    static _add(user) {
-        _users.push(user);
+    static allJson(cb) {
+        this.all(function(users) {
+            let jsonUsers = users.map(function(user) { return user.json() })
+            cb(jsonUsers)
+        })
     }
 
-    static removeAll() {
-        _users = [];
+    static findByName(name, cb) {
+        return UserModel.find({name: name}, function(err, users) {
+            cb(users);
+        });
+    }
+
+    static findByRoom(room) {
+        return new Promise(function(resolve, reject) {
+            UserModel.find({roomId: room.id}, function(err, userRecords) {
+                if(!err) {
+                    let users = User.initRecords(userRecords)
+                    resolve(users)
+                } else {
+                    reject(err);
+                }
+            })
+        });
+    }
+
+    static removeAll(cb = function(){}) {
+        UserModel.remove({}, cb())
     }
 }
 
