@@ -19,6 +19,10 @@ class Room {
         this._users =   [];
     }
 
+    get id() {
+        return this._record.id;
+    }
+
     get name() {
         return this._record.name;
     }
@@ -29,6 +33,7 @@ class Room {
 
     json() {
         return {
+            id:   this.id,
             slug:   this.slug,
             name:   this.name
         };

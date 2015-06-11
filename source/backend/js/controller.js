@@ -25,9 +25,9 @@ class Controller {
     }
 
     idleSocket (socket) {
-        socket.on('join', function(roomName) {
+        socket.on('join', function(r) {
             let room = rooms.filter(function(room) {
-                return room.name === roomName;
+                return (room.name === r) || (room.id === r);
             });
 
             if(room) {
