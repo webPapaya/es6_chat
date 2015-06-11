@@ -1,8 +1,13 @@
-import BaseStore        from './base_store'
-import AppDispatcher    from '../dispatcher/app_dispatcher'
 import assign           from 'object-assign'
 import offlineStorage   from 'store'
 import { EventEmitter } from 'events'
+import _                from 'lodash'
+
+
+import BaseStore        from './base_store'
+import AppDispatcher    from '../dispatcher/app_dispatcher'
+import AppActions       from '../actions/app_actions'
+
 
 
 let RoomStore = assign({}, BaseStore, {
@@ -29,7 +34,12 @@ AppDispatcher.register(function(action) {
             offlineStorage.set('rooms', rooms);
             RoomStore.emitChange();
             break;
+
+        case 'error':
+            RoomStore.emitError(action.payload);
+            break;
     }
 });
+
 
 export default RoomStore;

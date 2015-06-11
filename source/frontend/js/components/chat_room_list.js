@@ -11,7 +11,10 @@ var { Link } = Router;
 class ChatInput extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {rooms: RoomStore.getRooms()};
+        this.state = {
+            rooms: RoomStore.getRooms(),
+            errors: []
+        };
     }
 
     _roomAdded() {
@@ -20,13 +23,20 @@ class ChatInput extends React.Component {
 
     componentDidMount() {
         RoomStore.addChangeListener(this._roomAdded.bind(this));
+        RoomStore.addErrorListener(this._handleError.bind(this));
     }
 
     componentWillUnmount() {
         RoomStore.removeChangeListener();
+        RoomStore.removeErrorListener();
     }
 
-    _formatMessages() {
+    _handleError(payload) {
+        this.state.errors.push(payload);
+        this.forceUpdate();
+    }
+
+    _formatRooms() {
         return this.state.rooms.map(function(item) {
             return(
                 <li>
@@ -38,11 +48,20 @@ class ChatInput extends React.Component {
         });
     }
 
-    render() {
+    _getErrors() {
+        return this.state.errors.map(function() {
+            let error = this.state.errors.pop();
+            return(<div>{error.message}</div>)
+        }.bind(this));
+    }
 
+    render() {
         return(
             <div>
-                {this._formatMessages()}
+                <div>
+                    {this._getErrors()}
+                </div>
+                {this._formatRooms()}
             </div>
         );
     }

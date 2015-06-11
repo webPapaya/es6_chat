@@ -2,7 +2,7 @@ import React     from 'react';
 import Router    from 'react-router';
 import Radium    from 'radium';
 import colors    from '../styles/colors';
-import ChatStore from '../stores/chat_store'
+import UserStore from '../stores/user_store'
 
 var { Route, RouteHandler, Link } = Router;
 
@@ -33,22 +33,20 @@ class Component extends React.Component {
                 'home':       'Home'
                 //'chatWindow': 'Chat'
             },
-            username: ChatStore.getUserName()
+            username: UserStore.getUserName()
         };
     }
 
-
-
     componentDidMount() {
-        ChatStore.addChangeListener(this._nameChanged.bind(this));
+        UserStore.addChangeListener(this._nameChanged.bind(this));
     }
 
     componentWillUnmount() {
-        ChatStore.removeChangeListener();
+        UserStore.removeChangeListener();
     }
 
     _nameChanged() {
-        this.setState({username: ChatStore.getUserName()})
+        this.setState({username: UserStore.getUserName()})
     }
 
     getLinks() {

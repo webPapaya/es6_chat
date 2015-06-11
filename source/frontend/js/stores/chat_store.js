@@ -6,7 +6,7 @@ import assign           from 'object-assign'
 import offlineStorage   from 'store'
 import { EventEmitter } from 'events'
 
-var AppStore = assign({}, BaseStore, {
+var ChatStore = assign({}, BaseStore, {
     getMessages(roomId) {
         let messages = offlineStorage.get('messages');
         if (messages) {
@@ -31,14 +31,14 @@ AppDispatcher.register(function(action) {
             messages[roomId].push({date, message});
             offlineStorage.set('messages', messages)
 
-            AppStore.emitChange();
+            ChatStore.emitChange();
             break;
 
         case 'changeName':
             offlineStorage.set('username', action.payload.name);
-            AppStore.emitChange();
+            ChatStore.emitChange();
             break;
     }
 });
 
-export default AppStore;
+export default ChatStore;

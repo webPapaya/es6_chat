@@ -9,8 +9,8 @@ import ChatRooms    from './chat_rooms';
 
 // Actions
 import AppActions from '../actions/app_actions';
-import AppStore   from '../stores/chat_store';
 import RoomStore  from '../stores/room_store';
+import ChatStore  from '../stores/chat_store';
 
 class ChatWindow extends React.Component {
     static willTransitionTo (transition, params) {
@@ -22,7 +22,6 @@ class ChatWindow extends React.Component {
     }
 
     render() {
-
         return(
             <div className="col-group">
                 <div className="col-9">
