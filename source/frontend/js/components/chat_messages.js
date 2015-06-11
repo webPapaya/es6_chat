@@ -18,7 +18,7 @@ class ChatMessages extends React.Component {
 
     componentDidMount() {
         ChatStore.addChangeListener(function(){
-            this.setState();
+            this.forceUpdate();
         }.bind(this));
     }
 
