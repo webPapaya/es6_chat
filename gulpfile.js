@@ -33,6 +33,7 @@ var backendDirs = {
 // Transpile ES6 and React Components and
 // resolves dependencies with browserify
 gulp.task('transpile-js', function() {
+    console.log('--running transpile-js--');
     return browserify({
         entries:    (frontendDirs.srcJS + 'app.js'),
         extensions: ['.jsx', '.js'],
@@ -46,6 +47,7 @@ gulp.task('transpile-js', function() {
 });
 
 gulp.task('serve-backend', function() {
+    console.log('--running serve-backend--');
     if(node) return;
     node = spawn('node', [backendDirs.tmpJs + 'app.js'], {stdio: 'inherit'});
     node.on('close', function (code) {
@@ -56,6 +58,7 @@ gulp.task('serve-backend', function() {
 });
 
 gulp.task('transpile-backend', function() {
+    console.log('--running transpile-backend--');
     return gulp.src(backendDirs.src + '**/*.js')
         .pipe(plugins.plumber())
         .pipe(plugins.babel())
@@ -64,11 +67,13 @@ gulp.task('transpile-backend', function() {
 
 // Reload the HTML
 gulp.task('transpile-html', function() {
+    console.log('--running transpile-html--');
     return gulp.src('source/**/*.html')
         .pipe(plugins.livereload());
 });
 
 gulp.task('transpile-css', function () {
+    console.log('--running transpile-css--');
     return gulp.src(frontendDirs.srcCSS + '*.less')
         .pipe(plugins.less())
         .pipe(gulp.dest(frontendDirs.tmpCSS))
@@ -76,6 +81,7 @@ gulp.task('transpile-css', function () {
 });
 
 gulp.task('test', function () {
+    console.log('--running test--');
     return gulp.src(frontendDirs.test + 'test.js')
         .pipe(plugins.mocha({reporter: 'nyan'}))
         .pipe(plugins.livereload());
@@ -83,11 +89,13 @@ gulp.task('test', function () {
 
 
 gulp.task('test-backend', function() {
+    console.log('--running test-backend--');
    return gulp.src(backendDirs.tmp + 'spec/**/*.js')
     .pipe(plugins.mocha({reporter: 'nyan'}));
 });
 
 gulp.task('watch', function () {
+    console.log('--running watch--');
     plugins.livereload.listen();
     plugins.connect.server({
         root: [frontendDirs.tmp, frontendDirs.src],
@@ -104,9 +112,10 @@ gulp.task('watch', function () {
 });
 
 gulp.task('watch-backend', function() {
+    console.log('--running watch-backend--');
     gulp.watch(backendDirs.src + '/**/*.js',   ['transpile-backend']);
-    gulp.watch(backendDirs.tmpJs + 'app.js',   ['serve-backend']);
-    gulp.watch(backendDirs.tmp + '**/*.js',   ['test-backend']);
+    //gulp.watch(backendDirs.tmpJs + 'app.js', {debounceDelay: 4000},  ['serve-backend']);
+    gulp.watch(backendDirs.tmp + '**/*.js', {debounceDelay: 4000},  ['test-backend']);
 });
 
 gulp.task('frontend', ['transpile-js', 'transpile-css', 'transpile-html', 'watch']);
