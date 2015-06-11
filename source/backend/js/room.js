@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 let { Schema } = mongoose;
 import Promise from 'promise'
 import User from './user'
-import io from 'socket.io';
+import socket from 'socket.io';
 
+let io = socket(4020);
 
 let RoomSchema = new Schema({
     name: { type: String, index: { unique: true }, default: `Room-${Date.now()}` },
@@ -22,22 +23,12 @@ class Room {
         return this._record.name;
     }
 
-    get id() {
-        return this._record.id;
-    }
-
-    get default() {
-        return this._record.default;
-    }
-
     get slug() {
-        return `/${this.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')}`;
-
+        return this.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
     }
 
     json() {
         return {
-            id:     this.id,
             slug:   this.slug,
             name:   this.name
         };
@@ -47,51 +38,38 @@ class Room {
         return this._users;
     }
 
-    listen(port) {
-        this.chat = io(port)
-            .of(this.slug)
-            .on('connection', this.handleConnection)
-    }
+    connect(socket) {
+        let id = socket.id;
+        let user = User.new(id, this);
 
-    handleConnection(socket) {
-        let id = socket.id,
-            user = User.new(id, this);
-
+        socket.join(this.slug);
         this.enter(user);
 
         socket.on('disconnect', function() {
             this.leave(user);
-        })
+        });
 
         socket.on('message', function(msg) {
             this.message(msg, socket)
-        })
+        });
     }
 
     enter(user) {
-        this.emit(`# User ${user.name} connected.`);
+        this.message(`# User ${user.name} joined this room.`);
         return this._users.push(user);
     }
 
     leave(user) {
-        this.emit(`# User ${user.name} disconnected.`);
+        this.message(`# User ${user.name} left this room.`);
         let idx = this._users.indexOf(user);
         if(idx > -1) {
             return this._users.splice(idx, 1);
         }
     }
 
-    emit(msg) {
-        if(this.chat) {
-            return this.chat.emit(msg);
-        } else {
-            return false;
-        }
-    }
-
     message(msg, socket) {
-        let sender = this.userForSocket(socket);
-        this.chat.emit(`${sender.name}: ${msg}`);
+        let senderName = socket ? this.userForSocket(socket) : "System";
+        io.sockets.in(this.slug).emit('message', `${senderName}: ${msg}`)
     }
 
     static create(name, isDefault) {

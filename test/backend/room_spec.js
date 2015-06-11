@@ -55,7 +55,7 @@ describe('Chat: ', function() {
         });
 
         it('should have a slug', function() {
-            expect(room.slug).to.be('/new-room-1');
+            expect(room.slug).to.be('new-room-1');
         });
 
         describe('where one user joined', function() {

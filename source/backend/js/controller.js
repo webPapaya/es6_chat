@@ -23,6 +23,20 @@ class Controller {
             }
         )
     }
+
+    idleSocket (socket) {
+        socket.on('join', function(roomName) {
+            let room = rooms.filter(function(room) {
+                return room.name === roomName;
+            });
+
+            if(room) {
+                room.connect(socket);
+            } else {
+                socket.emit('error', `Room ${roomName} doesn't exist!`);
+            }
+        });
+    }
 }
 
 export default Controller

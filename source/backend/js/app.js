@@ -8,15 +8,12 @@ import Room from './room';
 import User from './user';
 import Controller from './controller';
 
-let app = express();
+let app = express(),
+    io = socket(1337);
 
 mongoose.connect(db.development);
 
 Room.all().then(function(rooms) {
-    rooms.forEach(function(room) {
-        room.listen(1337);
-    });
-
     let appController = new Controller(rooms);
 
     app.get('/',                appController.roomsIndex);
@@ -24,7 +21,9 @@ Room.all().then(function(rooms) {
     app.get('/rooms/:id/users', appController.roomUsers);
     app.get('/users',           appController.usersIndex);
 
-    let server = app.listen(4040, function () {
+    io.on("connection",         appController.idleSocket);
+
+    let server = app.listen(4000, function () {
         var host = server.address().address;
         var port = server.address().port;
 
