@@ -9,6 +9,10 @@ var plugins     = require('gulp-load-plugins')();
 var spawn = require('child_process').spawn;
 var node;
 
+var commonDirs = {
+    test:    './test/'
+}
+
 var frontendDirs = {
     src:     './source/frontend/',
     srcJS:   './source/frontend/js/',
@@ -18,17 +22,19 @@ var frontendDirs = {
     tmpCSS:  './tmp/frontend/css/',
     dist:    './dist/frontend/',
     distJS:  './dist/frontend/js/',
-    distCSS: './dist/frontend/css/',
-    test:    './test/'
+    distCSS: './dist/frontend/css/'
 };
 
 var backendDirs = {
-    src:     './source/backend/',
-    tmp:     './tmp/backend/',
-    tmpJs:     './tmp/backend/js/',
-    dist:    './dist/backend/',
-    spec:    './tmp/backend/spec/'
+    src:    './source/backend/js/',
+    tmp:    './tmp/backend/js/',
+    dist:   './dist/backend/'
 };
+
+function handleError(err) {
+    console.log(err.toString());
+    this.emit('end');
+}
 
 // Transpile ES6 and React Components and
 // resolves dependencies with browserify
@@ -46,10 +52,12 @@ gulp.task('transpile-js', function() {
     .pipe(plugins.livereload())
 });
 
-gulp.task('serve-backend', function() {
+gulp.task('serve-backend', ['transpile-backend'], function() {
     console.log('--running serve-backend--');
-    if(node) return;
-    node = spawn('node', [backendDirs.tmpJs + 'app.js'], {stdio: 'inherit'});
+    if(node) {
+        return;
+    }
+    node = spawn('node', [backendDirs.tmp + '/app.js'], {stdio: 'inherit'});
     node.on('close', function (code) {
         if (code === 8) {
             console.log('Error detected, waiting for changes...');
@@ -59,7 +67,7 @@ gulp.task('serve-backend', function() {
 
 gulp.task('transpile-backend', function() {
     console.log('--running transpile-backend--');
-    return gulp.src(backendDirs.src + '**/*.js')
+    return gulp.src(backendDirs.src + '/**/*.js')
         .pipe(plugins.plumber())
         .pipe(plugins.babel())
         .pipe(gulp.dest(backendDirs.tmp))
@@ -82,17 +90,18 @@ gulp.task('transpile-css', function () {
 
 gulp.task('test', function () {
     console.log('--running test--');
-    return gulp.src(frontendDirs.test + 'test.js')
+    return gulp.src(commonDirs.test + '**/*.js')
         .pipe(plugins.mocha({reporter: 'nyan'}))
+        .on('error', handleError)
         .pipe(plugins.livereload());
 });
 
 
-gulp.task('test-backend', function() {
-    console.log('--running test-backend--');
-   return gulp.src(backendDirs.tmp + 'spec/**/*.js')
-    .pipe(plugins.mocha({reporter: 'nyan'}));
-});
+//gulp.task('test-backend', function() {
+//    console.log('--running test-backend--');
+//   return gulp.src(backendDirs.tmp + 'spec/**/*.js')
+//    .pipe(plugins.mocha({reporter: 'nyan'}));
+//});
 
 gulp.task('watch', function () {
     console.log('--running watch--');
@@ -113,13 +122,11 @@ gulp.task('watch', function () {
 
 gulp.task('watch-backend', function() {
     console.log('--running watch-backend--');
-    gulp.watch(backendDirs.src + '/**/*.js',   ['transpile-backend']);
-    //gulp.watch(backendDirs.tmpJs + 'app.js', {debounceDelay: 4000},  ['serve-backend']);
-    gulp.watch(backendDirs.tmp + '**/*.js', {debounceDelay: 4000},  ['test-backend']);
+    gulp.watch(backendDirs.tmp + '**/*.js',   ['test']);
 });
 
 gulp.task('frontend', ['transpile-js', 'transpile-css', 'transpile-html', 'watch']);
-gulp.task('backend',  ['transpile-backend', 'serve-backend', 'watch-backend']);
+gulp.task('backend',  ['serve-backend', 'watch-backend', 'watch-tests']);
 
 gulp.task('default',   ['backend', 'frontend']);
 
@@ -128,7 +135,8 @@ gulp.task('watch-tests', function() {
     gulp.watch([
             frontendDirs.src + '**/*.js',
             frontendDirs.src + 'source/**/*.jsx',
-            frontendDirs.src + 'test/**/*.js'
+            frontendDirs.src + 'test/**/*.js',
+            commonDirs.test  + '**/*.js',
         ],
         ['test']
     );
