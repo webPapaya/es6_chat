@@ -37,7 +37,7 @@ gulp.task('transpile-js', function() {
         extensions: ['.jsx', '.js'],
         debug:      true
     })
-    .transform(babelify)
+    .transform(babelify, { stage: 0 })
     .bundle()
     .pipe(source('app.js'))
     .pipe(gulp.dest(frontendDirs.tmpJS))

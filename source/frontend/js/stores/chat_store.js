@@ -1,45 +1,43 @@
 "use strict";
 
+import BaseStore        from './base_store'
 import AppDispatcher    from '../dispatcher/app_dispatcher'
 import assign           from 'object-assign'
+import offlineStorage   from 'store'
 import { EventEmitter } from 'events'
 
-let messages = [];
-let rooms    = [];
-
-var AppStore = assign({}, EventEmitter.prototype, {
-    getMessages() {
-      return messages;
+var AppStore = assign({}, BaseStore, {
+    getMessages(roomId) {
+        let messages = offlineStorage.get('messages');
+        if (messages) {
+            return messages[roomId] || [];
+        }
+        return [];
     },
 
-    getRooms() {
-        return rooms;
-    },
-
-    addChangeListener(callback) {
-        this.on('change', callback);
-    },
-
-    removeChangeListener() {
-        this.removeAllListeners('change');
-    },
-
-    emitChange() {
-        this.emit('change');
+    getUserName() {
+      return offlineStorage.get('username') || '';
     }
 });
+
 
 AppDispatcher.register(function(action) {
     switch(action.actionType) {
         case 'handleMessage':
-            messages.push(action.payload);
+            let messages = offlineStorage.get('messages') || {};
+            let {roomId, date, message} = action.payload;
+
+            if(!messages[roomId]){messages[roomId] = []}
+            messages[roomId].push({date, message});
+            offlineStorage.set('messages', messages)
+
             AppStore.emitChange();
             break;
-        case 'addChatRoom':
-            rooms.push(action.payload);
-            AppStore.emitChange();
 
-        default:
+        case 'changeName':
+            offlineStorage.set('username', action.payload.name);
+            AppStore.emitChange();
+            break;
     }
 });
 
