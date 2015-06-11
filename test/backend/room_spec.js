@@ -48,38 +48,43 @@ describe('Chat: ', function() {
         })
 
         describe('that is empty', function() {
-            it('should have no users', function(done) {
-                room.users(function(users) {
-                    expect(users).to.not.be(undefined);
-                    expect(users.length).to.be(0);
-                    done();
-                });
+            it('should have no users', function() {
+                expect(room.users()).to.not.be(undefined);
+                expect(room.users().length).to.be(0);
             });
+        });
+
+        it('should have a slug', function() {
+            expect(room.slug).to.be('new-room-1');
         });
 
         describe('where one user joined', function() {
             var user;
 
-            beforeEach(function(done) {
-                User.create('Testuser', room).then(function(newUser) {
-                    user = newUser;
-                    done();
-                });
-            })
-
-            it('should have one user', function(done) {
-                room.users(function(users) {
-                    expect(users).to.not.be(undefined);
-                    expect(users.length).to.be(1);
-                    done();
-                });
+            beforeEach(function() {
+                user = new User(1234, room);
+                room.enter(user);
             });
+
+            it('should have users', function() {
+                expect(room.users()).to.not.be(undefined);
+            });
+
+            it('should have one user', function() {
+                expect(room.users().length).to.be(1);
+            });
+
+            describe('and left', function() {
+                beforeEach(function() {
+                    room.leave(user);
+                })
+            })
         });
     });
 
     describe('List of rooms', function() {
         it('should not return database records', function (done) {
-            Room.all(function(rooms) {
+            Room.all().then(function(rooms) {
                 expect(rooms[0].users).to.not.be(undefined);
                 done();
             })
@@ -87,11 +92,11 @@ describe('Chat: ', function() {
 
         describe('as json', function() {
             it('should not return raw objects', function (done) {
-                Room.allJson(function(rooms) {
+                Room.allJson().then(function(rooms) {
                     expect(rooms[0]._name).to.be(undefined);
                     expect(rooms[0].name).to.not.be(undefined);
                     done();
-                })
+                });
             });
         });
     });

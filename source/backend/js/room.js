@@ -2,7 +2,9 @@ import mongoose from 'mongoose';
 let { Schema } = mongoose;
 import Promise from 'promise'
 import User from './user'
+import socket from 'socket.io';
 
+let io = socket(4020);
 
 let RoomSchema = new Schema({
     name: { type: String, index: { unique: true }, default: `Room-${Date.now()}` },
@@ -13,41 +15,66 @@ let RoomModel = mongoose.model('Room', RoomSchema)
 
 class Room {
     constructor(dbRecord) {
-        this._record = dbRecord
-
-    }
-
-    get name() {
-        return this._record.name;
+        this._record =  dbRecord;
+        this._users =   [];
     }
 
     get id() {
         return this._record.id;
     }
 
-    get default() {
-        return this._record.default;
+    get name() {
+        return this._record.name;
+    }
+
+    get slug() {
+        return this.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
     }
 
     json() {
         return {
-            id: this.id,
-            name: this.name
+            id:   this.id,
+            slug:   this.slug,
+            name:   this.name
         };
     }
 
-
-    save(cb) {
-        this._record.save(function (err) {
-            cb(err)
-        })
+    users() {
+        return this._users;
     }
 
-    users(cb) {
-        User.findByRoom(this)
-            .then(function(users) {
-                cb(users);
-            });
+    connect(socket) {
+        let id = socket.id;
+        let user = User.new(id, this);
+
+        socket.join(this.slug);
+        this.enter(user);
+
+        socket.on('disconnect', function() {
+            this.leave(user);
+        });
+
+        socket.on('message', function(msg) {
+            this.message(msg, socket)
+        });
+    }
+
+    enter(user) {
+        this.message(`# User ${user.name} joined this room.`);
+        return this._users.push(user);
+    }
+
+    leave(user) {
+        this.message(`# User ${user.name} left this room.`);
+        let idx = this._users.indexOf(user);
+        if(idx > -1) {
+            return this._users.splice(idx, 1);
+        }
+    }
+
+    message(msg, socket) {
+        let senderName = socket ? this.userForSocket(socket) : "System";
+        io.sockets.in(this.slug).emit('message', `${senderName}: ${msg}`)
     }
 
     static create(name, isDefault) {
@@ -64,42 +91,35 @@ class Room {
         });
     }
 
-    static all(cb) {
-        RoomModel.find(function(err, rooms) {
-            rooms = rooms.map(function(rec) {
-                return new Room(rec)
-            })
-
-            cb(rooms, err)
-        });
-    }
-
-    static allJson(cb) {
-        this.all(function(rooms) {
-            let jsonRooms = rooms.map(function(room) {
-                return room.json()
-            })
-
-            cb(jsonRooms)
-        });
-    }
-
-    static find(id) {
+    static all() {
         return new Promise(function(resolve, reject) {
-            RoomModel.findById(id, function(err, roomRecord) {
+            RoomModel.find(function(err, rooms) {
+                rooms = rooms.map(function(rec) {
+                    return new Room(rec)
+                });
+
                 if(!err) {
-                    let room = new Room(roomRecord);
-                    resolve(room);
+                    return resolve(rooms);
                 } else {
-                    reject(err)
+                    return reject(err);
                 }
-            })
+            });
         })
     }
 
-    static default(cb) {
-        RoomModel.findOne({ default: true }, function(err, room) {
-            cb(room, err)
+    static allJson() {
+        return new Promise(function(resolve, reject) {
+            Room.all()
+                .then(function(rooms) {
+                    let jsonRooms = rooms.map(function(room) {
+                        return room.json()
+                    })
+
+                    resolve(jsonRooms);
+                })
+                .catch(function(err) {
+                    reject(err);
+                });
         })
     }
 }
