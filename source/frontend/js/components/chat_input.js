@@ -18,8 +18,8 @@ let styles = {
         background:         colors.primary,
         border:             `1px solid ${colors.primary}`,
         color:              colors.white,
-        'border-bottom-right-radius':  5,
-        'border-top-right-radius': 5,
+        borderBottomRightRadius:  5,
+        borderTopRightRadius: 5,
         ':hover':  {
             border:     `1px solid ${colors.primaryHover}`,
             background: colors.primaryHover
@@ -27,9 +27,9 @@ let styles = {
     },
     input: {
         outline: 0,
-        border: `1px solid ${colors.lightGray}`,
-        'border-bottom-left-radius':  5,
-        'border-top-left-radius': 5
+        border:                  `1px solid ${colors.lightGray}`,
+        borderBottomLeftRadius:  5,
+        borderTopLeftRadius:     5
     }
 };
 

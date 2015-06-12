@@ -8,18 +8,17 @@ var { Route, RouteHandler, Link } = Router;
 
 let styles = {
     navigation: {
-        'border-bottom': `1px solid ${colors.lightGray}`,
-        display:         'flex',
-        'list-style':    'none',
-        'margin':        0,
-        'padding':       0
+        borderBottom: `1px solid ${colors.lightGray}`,
+        listStyle:    'none',
+        margin:        0,
+        padding:       0
     },
     navItem:  {
-        'flex-grow':     1
+        //'flex-grow':     1
     },
     navLink: {
-        'padding':      20,
-        'text-decoration': 'none'
+        padding:      20,
+        textDecoration: 'none'
     }
 };
 
