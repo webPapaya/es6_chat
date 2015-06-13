@@ -15,7 +15,6 @@ mongoose.connect(db.development);
 
 Room.all().then(function(rooms) {
     let appController = new Controller(rooms);
-
     app.get('/',                appController.roomsIndex);
     app.get('/rooms',           appController.roomsIndex);
     app.get('/rooms/:id/users', appController.roomUsers);

@@ -2,9 +2,9 @@ var assert = require("assert"),
     expect = require("expect.js");
 
 var mongoose =  require("mongoose"),
-    db =        require("../../tmp/backend/js/config/config").db,
-    User =      require("../../tmp/backend/js/user"),
-    Room =      require("../../tmp/backend/js/room");
+    db =        require("../../tmp/test/backend/js/config/config").db,
+    User =      require("../../tmp/test/backend/js/user"),
+    Room =      require("../../tmp/test/backend/js/room");
 
 var wipeDbAfterTests = true;
 

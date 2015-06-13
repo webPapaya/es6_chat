@@ -6,6 +6,8 @@ import UserStore from '../stores/user_store'
 
 var { Route, RouteHandler, Link } = Router;
 
+
+
 let styles = {
     navigation: {
         borderBottom: `1px solid ${colors.lightGray}`,
@@ -71,6 +73,7 @@ class Component extends React.Component {
                 <ol style={styles.navigation}>
                     {this.getLinks.call(this)}
                     <li>
+                        hallo
                         Username: {this.state.username}
                     </li>
                 </ol>
