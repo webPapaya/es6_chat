@@ -7,9 +7,12 @@ import { db } from './config/config'
 import Room from './room';
 import User from './user';
 import Controller from './controller';
+import globalConfig from './config/config'
+
+
 
 let app = express(),
-    io = socket(1337);
+    io = socket(globalConfig.websocketPort);
 
 mongoose.connect(db.development);
 
@@ -22,7 +25,7 @@ Room.all().then(function(rooms) {
 
     io.on("connection",         appController.idleSocket);
 
-    let server = app.listen(4000, function () {
+    let server = app.listen(globalConfig.backendPort, function () {
         var host = server.address().address;
         var port = server.address().port;
 

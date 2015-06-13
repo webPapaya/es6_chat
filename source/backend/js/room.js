@@ -3,8 +3,9 @@ let { Schema } = mongoose;
 import Promise from 'promise'
 import User from './user'
 import socket from 'socket.io';
+import globalConfig from './config/config'
 
-let io = socket(4020);
+let io = socket(globalConfig.websocketPort);
 
 let RoomSchema = new Schema({
     name: { type: String, index: { unique: true }, default: `Room-${Date.now()}` },
