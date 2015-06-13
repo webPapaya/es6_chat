@@ -1,5 +1,5 @@
-import Promise from 'promise';
-import Room from './room';
+import Promise from 'promise'
+import Room from './room'
 
 class User {
     constructor(id, room, name=undefined) {

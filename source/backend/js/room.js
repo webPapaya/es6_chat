@@ -1,11 +1,9 @@
-import mongoose from 'mongoose';
-let { Schema } = mongoose;
+import mongoose from 'mongoose'
+let { Schema } = mongoose
 import Promise from 'promise'
 import User from './user'
-import socket from 'socket.io';
-import globalConfig from './config/config'
-
-let io = socket(globalConfig.websocketPort);
+import socket from 'socket.io'
+import io from './io'
 
 let RoomSchema = new Schema({
     name: { type: String, index: { unique: true }, default: `Room-${Date.now()}` },

@@ -1,18 +1,17 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import socket from 'socket.io'
+import express from 'express'
+import mongoose from 'mongoose'
 
 import { db } from './config/config'
 
-import Room from './room';
-import User from './user';
-import Controller from './controller';
+import Room from './room'
+import User from './user'
+import Controller from './controller'
 import globalConfig from './config/config'
+import io from './io'
 
 
 
-let app = express(),
-    io = socket(globalConfig.websocketPort);
+let app = express();
 
 mongoose.connect(db.development);
 
