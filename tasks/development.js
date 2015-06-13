@@ -27,7 +27,7 @@ gulp.task('transpile-frontend-js', function() {
         .bundle()
         .pipe(source('app.js'))
         .pipe(buffer())
-        .pipe(plugins.uglify())
+        //.pipe(plugins.uglify())
         .pipe(gulp.dest(frontendDirs.tmpJS))
         .pipe(plugins.livereload())
 });
