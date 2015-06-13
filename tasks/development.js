@@ -34,11 +34,12 @@ gulp.task('transpile-frontend-js', function() {
 
 // Transpile Backend ES6 Modules
 // to ES5 Modules
-gulp.task('transpile-backend-js', function() {
+gulp.task('transpile-backend', function() {
     return gulp.src(backendDirs.src + '/**/*.js')
         .pipe(plugins.plumber())
         .pipe(plugins.babel())
         .pipe(gulp.dest(backendDirs.tmp))
+        .pipe(plugins.livereload());
 });
 
 // Transpile LESS to CSS
@@ -78,6 +79,8 @@ gulp.task('serve-backend', ['transpile-backend'], function() {
             console.log('Error detected, waiting for changes...');
         }
     });
+
+    gulp.watch(backendDirs.src  + '/**/*.js',   ['transpile-backend']);
 });
 
 gulp.task('open-browser', function() {
@@ -98,4 +101,6 @@ gulp.task('serve-frontend', ['transpile-frontend', 'open-browser'], function() {
     gulp.watch(frontendDirs.srcCSS + '/**/*.less', ['transpile-frontend-css']);
 });
 
+
+gulp.task('serve', ['serve-backend', 'serve-frontend']);
 
