@@ -1,13 +1,9 @@
 var gulp        = require('gulp');
 var browserify  = require('browserify');
-var watchify    = require('watchify');
 var babelify    = require('babelify');
 var source      = require('vinyl-source-stream');
 var plugins     = require('gulp-load-plugins')();
 var buffer      = require('vinyl-buffer');
-
-var spawn = require('child_process').spawn;
-var node;
 
 var backendDirs  = require('./config.js').backendDirs;
 var frontendDirs = require('./config.js').frontendDirs;
@@ -27,7 +23,7 @@ gulp.task('transpile-frontend-js', function() {
         .bundle()
         .pipe(source('app.js'))
         .pipe(buffer())
-        //.pipe(plugins.uglify())
+        .pipe(plugins.uglify())
         .pipe(gulp.dest(frontendDirs.tmpJS))
         .pipe(plugins.livereload())
 });

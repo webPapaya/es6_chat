@@ -59,17 +59,6 @@ class Controller {
 
                 }
             );
-            //let room = rooms.filter(function(room) {
-            //    return (room.name === r) || (room.id === r);
-            //});
-            //
-            //if(room) {
-                    //Room.connect()
-            //    room.connect(socket);
-            //    //console.lo
-            //} else {
-            //    socket.emit('error', `Room ${roomName} doesn't exist!`);
-            //}
         });
 
         socket.on('addMessage', function(roomId, message, username) {
