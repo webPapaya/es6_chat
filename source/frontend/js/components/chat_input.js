@@ -10,27 +10,27 @@ import colors     from '../styles/colors';
 const ENTER_KEY_CODE = 13;
 
 let styles = {
-    base: {
-        border:             'none',
-        padding:            '7px 10px'
-    },
-    button: {
-        background:         colors.primary,
-        border:             `1px solid ${colors.primary}`,
-        color:              colors.white,
-        borderBottomRightRadius:  5,
-        borderTopRightRadius: 5,
-        ':hover':  {
-            border:     `1px solid ${colors.primaryHover}`,
-            background: colors.primaryHover
-        }
-    },
-    input: {
-        outline: 0,
-        border:                  `1px solid ${colors.lightGray}`,
-        borderBottomLeftRadius:  5,
-        borderTopLeftRadius:     5
-    }
+    //base: {
+    //    border:             'none',
+    //    padding:            '7px 10px'
+    //},
+    //button: {
+    //    background:         colors.primary,
+    //    border:             `1px solid ${colors.primary}`,
+    //    color:              colors.white,
+    //    borderBottomRightRadius:  5,
+    //    borderTopRightRadius: 5,
+    //    ':hover':  {
+    //        border:     `1px solid ${colors.primaryHover}`,
+    //        background: colors.primaryHover
+    //    }
+    //},
+    //input: {
+    //    outline: 0,
+    //    border:                  `1px solid ${colors.lightGray}`,
+    //    borderBottomLeftRadius:  5,
+    //    borderTopLeftRadius:     5
+    //}
 };
 
 @Radium
@@ -60,7 +60,10 @@ class ChatInput extends React.Component {
         let label;
         if(this.props.label) {
             label = (
-                <label for={this.props.label}>
+                <label
+                    for={this.props.label}
+                    className="chat-input--label"
+                >
                     {this.props.label}
                 </label>
             )
@@ -70,23 +73,25 @@ class ChatInput extends React.Component {
 
     render() {
         return(
-            <div>
+            <div className="chat-input--all">
                 {this.getLabel()}
-                <input
-                    id={this.props.label}
-                    style={[styles.base, styles.input]}
-                    type="text"
-                    onChange={this._inputChange.bind(this)}
-                    onKeyDown={this._send.bind(this)}
-                    value={this.state.value}
-                />
+                <div className="chat-input--wrp">
+                    <input
+                        className="chat-input--input"
+                        id={this.props.label}
+                        type="text"
+                        onChange={this._inputChange.bind(this)}
+                        onKeyDown={this._send.bind(this)}
+                        value={this.state.value}
+                    />
 
-                <button
-                    onClick={this._submit.bind(this)}
-                    style={[styles.base, styles.button]}
-                >
-                    Senden
-                </button>
+                    <button
+                        className="chat-input--button"
+                        onClick={this._submit.bind(this)}
+                    >
+                        Senden
+                    </button>
+                </div>
             </div>
         );
     }
