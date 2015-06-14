@@ -70,17 +70,12 @@ gulp.task('transpile-frontend', [
 ]);
 
 gulp.task('serve-backend', ['transpile-backend'], function() {
-    if(node) {
-        return;
-    }
-    node = spawn('node', [backendDirs.tmp + '/app.js'], {stdio: 'inherit'});
-    node.on('close', function (code) {
-        if (code === 8) {
-            console.log('Error detected, waiting for changes...');
-        }
-    });
+    plugins.developServer.listen( { path: (backendDirs.tmp + '/app.js') } );
+    gulp.watch(backendDirs.src  + '/**/*.js', ['transpile-backend', 'serve-backend-restart']);
+});
 
-    gulp.watch(backendDirs.src  + '/**/*.js',   ['transpile-backend']);
+gulp.task('serve-backend-restart', function() {
+   plugins.developServer.restart();
 });
 
 gulp.task('open-browser', function() {
