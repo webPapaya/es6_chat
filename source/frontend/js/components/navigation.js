@@ -7,24 +7,6 @@ import UserStore from '../stores/user_store'
 var { Route, RouteHandler, Link } = Router;
 
 
-
-let styles = {
-    navigation: {
-        borderBottom: `1px solid ${colors.lightGray}`,
-        listStyle:    'none',
-        margin:        0,
-        padding:       0
-    },
-    navItem:  {
-        //'flex-grow':     1
-    },
-    navLink: {
-        padding:      20,
-        textDecoration: 'none'
-    }
-};
-
-
 @Radium
 class Component extends React.Component {
     constructor(props) {
@@ -54,10 +36,10 @@ class Component extends React.Component {
         let links = [];
         for(let key in this.state.links) {
             links.push(
-                <li style={styles.navItem}>
+                <li className="navigation--li">
                     <Link
                         to={key}
-                        style={styles.navLink}
+                        className="navigation--link"
                     >
                         {this.state.links[key]}
                     </Link>
@@ -70,13 +52,15 @@ class Component extends React.Component {
     render () {
         return (
             <div>
-                <ol style={styles.navigation}>
-                    {this.getLinks.call(this)}
-                    <li>
-                        hallo
-                        Username: {this.state.username}
-                    </li>
-                </ol>
+                <div className="header--wrp">
+                    <ol className="navigation--wrp">
+                        {this.getLinks.call(this)}
+                        <li>
+                            hallo
+                            Username: {this.state.username}
+                        </li>
+                    </ol>
+                </div>
                 <RouteHandler/>
             </div>
         );

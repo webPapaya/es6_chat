@@ -1,0 +1,18 @@
+.room-list--wrp {
+  height:  calc(~"100vh -" @headerHeight);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  width: 25%;
+}
+
+.room-list--link {
+  padding: 15px 20px;
+  display: block;
+  text-decoration: none;
+  border-bottom: 1px solid @lightGray;
+  color: @darkGray;
+
+  &:hover {
+    background: @veryLightGray;
+  }
+}

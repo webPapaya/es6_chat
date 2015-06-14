@@ -40,7 +40,11 @@ class ChatInput extends React.Component {
         return this.state.rooms.map(function(item) {
             return(
                 <li>
-                    <Link to="chatRoom" params={{id: item.id}}>
+                    <Link
+                        to="chatRoom"
+                        params={{id: item.id}}
+                        className="room-list--link"
+                    >
                         {item.name}
                     </Link>
                 </li>
@@ -61,7 +65,9 @@ class ChatInput extends React.Component {
                 <div>
                     {this._getErrors()}
                 </div>
-                {this._formatRooms()}
+                <ul className="room-list--list">
+                    {this._formatRooms()}
+                </ul>
             </div>
         );
     }

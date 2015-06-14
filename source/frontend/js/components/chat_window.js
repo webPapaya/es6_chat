@@ -25,16 +25,20 @@ class ChatWindow extends React.Component {
     render() {
         return(
             <div className="col-group">
-                <div className="col-9">
-                    <ChatInput
-                        label="Message: "
-                        submitCallback={this._addMessage.bind(this)}
-                    />
-                    <ChatMessages
-                        roomId={RoomStore.getCurrentRoom().id}
-                    />
+                <div className="col-8 chat-window--wrp">
+                    <div className="chat-window--messages">
+                        <ChatMessages
+                            roomId={RoomStore.getCurrentRoom().id}
+                        />
+                    </div>
+                    <div className="chat-window--input">
+                        <ChatInput
+                            label="Message: "
+                            submitCallback={this._addMessage.bind(this)}
+                        />
+                    </div>
                 </div>
-                <div className="col-3">
+                <div className="col-2 room-list--wrp">
                     <ChatRooms />
                 </div>
             </div>

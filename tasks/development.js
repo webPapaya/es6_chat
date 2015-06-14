@@ -47,6 +47,7 @@ gulp.task('transpile-backend', function() {
 // and minifies css
 gulp.task('transpile-frontend-css', function () {
     return gulp.src(frontendDirs.srcCSS + 'main.less')
+        .pipe(plugins.plumber())
         .pipe(plugins.less())
         .pipe(plugins.autoprefixer({
             browsers: ['last 5 versions'],
@@ -92,7 +93,7 @@ gulp.task('serve-frontend', ['transpile-frontend', 'open-browser'], function() {
     });
 
     gulp.watch(frontendDirs.srcJS  + '/**/*.js',   ['transpile-frontend-js']);
-    gulp.watch(frontendDirs.src    + '/**/*.html', ['transpile-html']);
+    gulp.watch(frontendDirs.src    + '/**/*.html', ['transpile-frontend-html']);
     gulp.watch(frontendDirs.srcCSS + '/**/*.less', ['transpile-frontend-css']);
 });
 

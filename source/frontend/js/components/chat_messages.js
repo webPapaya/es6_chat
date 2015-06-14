@@ -30,7 +30,7 @@ class ChatMessages extends React.Component {
         return(
             <div>
                 Currently in Room {RoomStore.getCurrentRoom().name}
-                <ul>
+                <ul ref="messages">
                     {this._formatMessages()}
                 </ul>
             </div>
