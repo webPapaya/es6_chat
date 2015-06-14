@@ -25,6 +25,29 @@ class Controller {
     }
 
     idleSocket (socket) {
+        socket.emit('connection');
+        socket.on('addChatRoom', function(roomName) {
+            Room.create(roomName).then(
+                function success (response) {
+                    socket.emit('addedChatRoom', roomName);
+                },
+                function error(error) {
+                    socket.emit('addChatRoomFailed', error);
+                }
+            );
+        });
+
+        socket.on('getAllRooms', function() {
+            Room.allJson().then(
+                function success(rooms) {
+                    socket.emit('getAllRooms', rooms);
+                },
+                function error(error) {
+                    socket.emit('error', 'An error occured while getting Rooms');
+                }
+            );
+        });
+
         socket.on('join', function(r) {
             let room = rooms.filter(function(room) {
                 return (room.name === r) || (room.id === r);

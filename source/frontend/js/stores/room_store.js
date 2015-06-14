@@ -22,9 +22,13 @@ let RoomStore = assign({}, BaseStore, {
 
 AppDispatcher.register(function(action) {
     switch(action.actionType) {
+        case 'initializeRooms':
+            offlineStorage.set('rooms', action.payload.rooms);
+            RoomStore.emitChange();
+
         case 'changeRoom':
             offlineStorage.set('currentRoom', action.payload.roomId);
-            RoomStore.emitChange()
+            RoomStore.emitChange();
             break;
 
         case 'addChatRoom':

@@ -38,7 +38,6 @@ class ChatInput extends React.Component {
     constructor(props) {
         super(props);
         this.state = {value: ''};
-        console.log('test')
     }
 
     _submit () {

@@ -5,7 +5,7 @@ import {}            from './socket_actions'
 import AppDispatcher from '../dispatcher/app_dispatcher'
 import Validations   from '../validations/validations'
 
-var AppActions = {
+let AppActions = {
     changeUserName: function(name) {
         AppDispatcher.dispatch({
             actionType: 'changeName',
@@ -46,6 +46,10 @@ var AppActions = {
                 }
             });
         }
+    },
+
+    addChatRoomFailed: function() {
+
     },
 
     changeRoom: function(roomId) {

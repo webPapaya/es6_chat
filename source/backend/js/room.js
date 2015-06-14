@@ -113,6 +113,7 @@ class Room {
                     let jsonRooms = rooms.map(function(room) {
                         return room.json()
                     })
+                    console.log(jsonRooms)
 
                     resolve(jsonRooms);
                 })
