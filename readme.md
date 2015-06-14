@@ -1,34 +1,36 @@
-// User ID Initialize
-// Get
-{
-	userId: String // Random Unique ID
-}
+# ES2015 Chat
 
-// Rooms
-// Post
-{
-	name: String // Username
-}
+This a a simple ES6 Chat written in Flux with React.
 
-// Rooms
-// Get
-[{
-	name: String
-	id: String
-}]
+## Installation
+ - Install and configure MongoDB
+ - Clone the Repository
+ - npm install
+ - gulp serve
 
-// Send Message
-// Post
-{
-	userId: String,
-	roomId: String,
-	message: String
-}
 
-// Get Messages
-// Get
-[{
-	userId: String,
-	message: String
-}]
+## Available Tasks
+
+Start the Frontend and Backend:
+```
+gulp serve
+```
+
+Run the Tests:
+```
+gulp test
+```
+
+or
+
+```
+gulp watch-tests
+```
+
+Generate Documentation:
+```
+gulp doc
+```
+
+
 
