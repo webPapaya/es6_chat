@@ -44,17 +44,37 @@ socket.on('connection', function() {
             }
         });
     });
-});
 
+    socket.on('newMessage', function(payload) {
+        AppDispatcher.dispatch({
+            actionType: 'handleMessage',
+            payload:    {
+                date:    new Date(),
+                message: payload.message,
+                roomId:  payload.roomId
+            }
+        });
+    });
+});
 
 let SocketActions = {
     addChatRoom: function(roomName) {
         socket.emit('addChatRoom', roomName);
+    },
+
+    handleMessage: function(roomId, message) {
+        socket.emit('addMessage', roomId, message);
+    },
+
+    changeRoom: function(roomId) {
+        AppDispatcher.dispatch({
+            actionType: 'changeRoom',
+            payload:    {
+                date:  new Date(),
+                roomId:  roomId
+            }
+        });
     }
 };
-
-
-
-
 
 export default SocketActions;

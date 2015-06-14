@@ -26,11 +26,9 @@ AppDispatcher.register(function(action) {
         case 'handleMessage':
             let messages = offlineStorage.get('messages') || {};
             let {roomId, date, message} = action.payload;
-
             if(!messages[roomId]){messages[roomId] = []}
             messages[roomId].push({date, message});
             offlineStorage.set('messages', messages)
-
             ChatStore.emitChange();
             break;
 

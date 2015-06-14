@@ -18,7 +18,6 @@ AppDispatcher.register(function(action) {
             offlineStorage.set('username', action.payload.name);
             UserStore.emitChange();
             break;
-
     }
 });
 

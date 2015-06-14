@@ -5,6 +5,8 @@ import User from './user'
 import socket from 'socket.io'
 import io from './io'
 
+let ObjectId = mongoose.Types.ObjectId;
+
 let RoomSchema = new Schema({
     name: { type: String, index: { unique: true }, default: `Room-${Date.now()}` },
     default: { type: Boolean, default: false }
@@ -45,6 +47,7 @@ class Room {
     connect(socket) {
         let id = socket.id;
         let user = User.new(id, this);
+
 
         socket.join(this.slug);
         this.enter(user);
@@ -112,15 +115,30 @@ class Room {
                 .then(function(rooms) {
                     let jsonRooms = rooms.map(function(room) {
                         return room.json()
-                    })
-                    console.log(jsonRooms)
-
+                    });
                     resolve(jsonRooms);
                 })
                 .catch(function(err) {
                     reject(err);
                 });
         })
+    }
+
+    static findById(id) {
+        return new Promise(function(resolve, reject) {
+            Room.all().then(
+                function success(rooms) {
+                    let room = rooms.filter(function(room) {
+                        return (room._id === id) || (room.id === id);
+                    });
+
+                    resolve(room[0]);
+                },
+                function error(error) {
+                    reject(error);
+                }
+            );
+        });
     }
 }
 

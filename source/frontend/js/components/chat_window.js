@@ -8,17 +8,18 @@ import ChatMessages from './chat_messages';
 import ChatRooms    from './chat_rooms';
 
 // Actions
-import AppActions from '../actions/app_actions';
-import RoomStore  from '../stores/room_store';
-import ChatStore  from '../stores/chat_store';
+import AppActions    from '../actions/app_actions';
+import SocketActions from '../actions/socket_actions';
+import RoomStore     from '../stores/room_store';
+import ChatStore     from '../stores/chat_store';
 
 class ChatWindow extends React.Component {
     static willTransitionTo (transition, params) {
-        AppActions.changeRoom(parseInt(params.id));
+        SocketActions.changeRoom(params.id);
     }
 
     _addMessage(value) {
-        AppActions.handleMessage(this.props.params.id, value);
+        SocketActions.handleMessage(this.props.params.id, value);
     }
 
     render() {

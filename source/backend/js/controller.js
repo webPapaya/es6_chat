@@ -48,16 +48,37 @@ class Controller {
             );
         });
 
-        socket.on('join', function(r) {
-            let room = rooms.filter(function(room) {
-                return (room.name === r) || (room.id === r);
-            });
+        socket.on('changeRoom', function(roomId) {
+            Room.findById(roomId).then(
+                function success(record) {
+                    let room = new Room(record);
+                    room.connect(socket);
+                    console.log('connected to room' + roomId)
+                },
+                function error() {
 
-            if(room) {
-                room.connect(socket);
-            } else {
-                socket.emit('error', `Room ${roomName} doesn't exist!`);
-            }
+                }
+            );
+            //let room = rooms.filter(function(room) {
+            //    return (room.name === r) || (room.id === r);
+            //});
+            //
+            //if(room) {
+                    //Room.connect()
+            //    room.connect(socket);
+            //    //console.lo
+            //} else {
+            //    socket.emit('error', `Room ${roomName} doesn't exist!`);
+            //}
+        });
+
+        socket.on('addMessage', function(roomId, message) {
+            let payload = {
+                roomId:  roomId,
+                message: message
+            };
+            socket.emit('newMessage', payload);
+            socket.broadcast.emit('newMessage', payload);
         });
     }
 }
