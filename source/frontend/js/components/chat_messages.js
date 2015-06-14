@@ -13,10 +13,14 @@ class ChatMessages extends React.Component {
     _formatMessages() {
         return this._getMessages().map(function(item) {
             return(
-                <li className="messages--message">
-                    {item.username} wrote at:
-                    { ' ' + new Date(item.date).toLocaleTimeString()}
-                    - {item.message}
+                <li className="message--wrp">
+                    <div className="messages--message">
+                        {item.message}
+                    </div>
+                    <div className="messages--meta">
+                        {item.username} wrote at:
+                        { ' ' + new Date(item.date).toLocaleTimeString()}
+                    </div>
                 </li>
             );
         });
