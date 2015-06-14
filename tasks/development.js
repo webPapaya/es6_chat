@@ -74,18 +74,16 @@ gulp.task('serve-backend-restart', function() {
    plugins.developServer.restart();
 });
 
-gulp.task('open-browser', function() {
-    gulp.src(frontendDirs.src + 'index.html')
-        .pipe(plugins.open('', { url: 'http://localhost:8080' }));
-});
-
-gulp.task('serve-frontend', ['transpile-frontend', 'open-browser'], function() {
+gulp.task('serve-frontend', ['transpile-frontend'], function() {
     plugins.livereload.listen();
     plugins.connect.server({
         root:       [frontendDirs.tmp, frontendDirs.src],
         port:       8080,
         livereload: true
     });
+
+    gulp.src(frontendDirs.src + 'index.html')
+        .pipe(plugins.open('', { url: 'http://localhost:8080' }));
 
     gulp.watch(frontendDirs.srcJS  + '/**/*.js',   ['transpile-frontend-js']);
     gulp.watch(frontendDirs.src    + '/**/*.html', ['transpile-frontend-html']);
