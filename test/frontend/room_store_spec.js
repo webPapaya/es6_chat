@@ -1,7 +1,9 @@
-var MockBrowser = require('mock-browser').mocks.MockBrowser;
+var MockBrowser   = require('mock-browser').mocks.MockBrowser;
+var browserWindow = MockBrowser.createWindow();
+
 GLOBAL.Function = function() {
     return function() {
-        return MockBrowser.createWindow();
+        return browserWindow;
     }
 };
 
@@ -16,7 +18,8 @@ describe('Room Store: ', function() {
                 actionType: 'addChatRoom',
                 payload:    {
                     date:  new Date(),
-                    name:  'hallo'
+                    name:  'hallo',
+                    id:    1
                 }
             });
             done();

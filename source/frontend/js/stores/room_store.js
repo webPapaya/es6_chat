@@ -12,11 +12,18 @@ import AppActions       from '../actions/app_actions'
 
 let RoomStore = assign({}, BaseStore, {
     getCurrentRoom() {
-        return offlineStorage.get('currentRoom');
+        let currentRoomId = offlineStorage.get('currentRoom');
+        let rooms = offlineStorage.get('rooms');
+        return _.find(rooms, {id: currentRoomId});
     },
+
 
     getRooms() {
         return offlineStorage.get('rooms') || [];
+    },
+
+    setCurrentRoom(roomId) {
+        offlineStorage.set('currentRoom', roomId);
     }
 });
 
@@ -25,9 +32,10 @@ AppDispatcher.register(function(action) {
         case 'initializeRooms':
             offlineStorage.set('rooms', action.payload.rooms);
             RoomStore.emitChange();
+            break;
 
         case 'changeRoom':
-            offlineStorage.set('currentRoom', action.payload.roomId);
+            RoomStore.setCurrentRoom(action.payload.roomId);
             RoomStore.emitChange();
             break;
 

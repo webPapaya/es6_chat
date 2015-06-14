@@ -15,6 +15,7 @@ gulp.task('test', ['prepare-test'], function() {
         .pipe(plugins.istanbul.hookRequire()) // Force `require` to return covered files
         .on('finish', function () {
             return gulp.src(testDirs.test, {read: false})
+                .pipe(plugins.plumber())
                 .pipe(plugins.spawnMocha({reporter: 'spec'}))
                 .pipe(plugins.istanbul.writeReports());
         });

@@ -31,7 +31,7 @@ class ChatWindow extends React.Component {
                         submitCallback={this._addMessage.bind(this)}
                     />
                     <ChatMessages
-                        roomId={RoomStore.getCurrentRoom()}
+                        roomId={RoomStore.getCurrentRoom().id}
                     />
                 </div>
                 <div className="col-3">
