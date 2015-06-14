@@ -72,11 +72,13 @@ class Controller {
             //}
         });
 
-        socket.on('addMessage', function(roomId, message) {
+        socket.on('addMessage', function(roomId, message, username) {
             let payload = {
-                roomId:  roomId,
-                message: message
+                roomId:   roomId,
+                message:  message,
+                username: username
             };
+
             socket.emit('newMessage', payload);
             socket.broadcast.emit('newMessage', payload);
         });

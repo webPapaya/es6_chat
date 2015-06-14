@@ -12,7 +12,13 @@ class ChatMessages extends React.Component {
 
     _formatMessages() {
         return this._getMessages().map(function(item) {
-            return <li>{new Date(item.date).toLocaleTimeString()} - {item.message}</li>
+            return(
+                <li className="messages--message">
+                    {item.username} wrote at:
+                    { ' ' + new Date(item.date).toLocaleTimeString()}
+                    - {item.message}
+                </li>
+            );
         });
     }
 

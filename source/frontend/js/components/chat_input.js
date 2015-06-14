@@ -9,31 +9,6 @@ import colors     from '../styles/colors';
 
 const ENTER_KEY_CODE = 13;
 
-let styles = {
-    //base: {
-    //    border:             'none',
-    //    padding:            '7px 10px'
-    //},
-    //button: {
-    //    background:         colors.primary,
-    //    border:             `1px solid ${colors.primary}`,
-    //    color:              colors.white,
-    //    borderBottomRightRadius:  5,
-    //    borderTopRightRadius: 5,
-    //    ':hover':  {
-    //        border:     `1px solid ${colors.primaryHover}`,
-    //        background: colors.primaryHover
-    //    }
-    //},
-    //input: {
-    //    outline: 0,
-    //    border:                  `1px solid ${colors.lightGray}`,
-    //    borderBottomLeftRadius:  5,
-    //    borderTopLeftRadius:     5
-    //}
-};
-
-@Radium
 class ChatInput extends React.Component {
     constructor(props) {
         super(props);

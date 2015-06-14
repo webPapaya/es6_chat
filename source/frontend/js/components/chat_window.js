@@ -12,6 +12,7 @@ import AppActions    from '../actions/app_actions';
 import SocketActions from '../actions/socket_actions';
 import RoomStore     from '../stores/room_store';
 import ChatStore     from '../stores/chat_store';
+import UserStore     from '../stores/user_store';
 
 class ChatWindow extends React.Component {
     static willTransitionTo (transition, params) {
@@ -19,7 +20,8 @@ class ChatWindow extends React.Component {
     }
 
     _addMessage(value) {
-        SocketActions.handleMessage(this.props.params.id, value);
+        let username = UserStore.getUserName();
+        SocketActions.handleMessage(this.props.params.id, value, username);
     }
 
     render() {

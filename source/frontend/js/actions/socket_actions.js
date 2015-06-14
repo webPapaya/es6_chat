@@ -49,9 +49,10 @@ socket.on('connection', function() {
         AppDispatcher.dispatch({
             actionType: 'handleMessage',
             payload:    {
-                date:    new Date(),
-                message: payload.message,
-                roomId:  payload.roomId
+                date:     new Date(),
+                message:  payload.message,
+                roomId:   payload.roomId,
+                username: payload.username
             }
         });
     });
@@ -62,8 +63,8 @@ let SocketActions = {
         socket.emit('addChatRoom', roomName);
     },
 
-    handleMessage: function(roomId, message) {
-        socket.emit('addMessage', roomId, message);
+    handleMessage: function(roomId, message, username) {
+        socket.emit('addMessage', roomId, message, username);
     },
 
     changeRoom: function(roomId) {
