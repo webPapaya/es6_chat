@@ -48,10 +48,6 @@ let AppActions = {
         }
     },
 
-    addChatRoomFailed: function() {
-
-    },
-
     changeRoom: function(roomId) {
         AppDispatcher.dispatch({
             actionType: 'changeRoom',

@@ -1,11 +1,9 @@
 "use strict";
 
 import React      from 'react';
-import Radium     from 'radium';
 import ChatButton from './chat_input';
 import ChatStore  from '../stores/chat_store';
 import AppActions from '../actions/app_actions';
-import colors     from '../styles/colors';
 
 const ENTER_KEY_CODE = 13;
 

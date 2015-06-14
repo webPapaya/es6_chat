@@ -1,13 +1,9 @@
 import React     from 'react';
 import Router    from 'react-router';
-import Radium    from 'radium';
-import colors    from '../styles/colors';
 import UserStore from '../stores/user_store'
 
 var { Route, RouteHandler, Link } = Router;
 
-
-@Radium
 class Component extends React.Component {
     constructor(props) {
         super(props);

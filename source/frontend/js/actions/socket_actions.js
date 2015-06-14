@@ -1,18 +1,23 @@
-"use strict";
+/**
+ * socket_actions.js
+ *
+ * These are the actions which are related to the websockets
+ */
 
 import globalConfig  from '../../../backend/js/config/config'
 import AppDispatcher from '../dispatcher/app_dispatcher'
 import IO            from 'socket.io-client'
 import AppActions    from './app_actions'
 
-
 let socket = IO(`http://localhost:${globalConfig.websocketPort}`);
 
+// Callback when the Client is connected to the server
 socket.on('connection', function() {
-    // Initialize data from the server
+    // fetch initialize data from the server
     socket.emit('getAllRooms');
-    socket.emit('getUsers');
 
+    // Action when the server provides all
+    // available rooms
     socket.on('getAllRooms', function(rooms){
         AppDispatcher.dispatch({
             actionType: 'initializeRooms',
@@ -23,6 +28,7 @@ socket.on('connection', function() {
         });
     });
 
+    // Action when a chat room was added on the server
     socket.on('addedChatRoom', function(roomName) {
         AppDispatcher.dispatch({
             actionType: 'addChatRoom',
@@ -33,6 +39,7 @@ socket.on('connection', function() {
         });
     });
 
+    // Main Action when the creation of a chatroom failed
     socket.on('addChatRoomFailed', function(error) {
         AppDispatcher.dispatch({
             actionType: 'error',
@@ -45,6 +52,7 @@ socket.on('connection', function() {
         });
     });
 
+    // Main action when a new message is received
     socket.on('newMessage', function(payload) {
         AppDispatcher.dispatch({
             actionType: 'handleMessage',

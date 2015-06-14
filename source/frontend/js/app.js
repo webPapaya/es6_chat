@@ -1,4 +1,8 @@
-"use strict";
+/**
+ * The Main entry point of the chat
+ * all routes for the chatroom are defined
+ * here.
+ */
 
 import React      from 'react';
 import Router     from 'react-router';

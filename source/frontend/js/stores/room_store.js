@@ -11,17 +11,19 @@ import AppActions       from '../actions/app_actions'
 
 
 let RoomStore = assign({}, BaseStore, {
+    // Returns the current room object
     getCurrentRoom() {
         let currentRoomId = offlineStorage.get('currentRoom');
         let rooms = offlineStorage.get('rooms');
         return _.find(rooms, {id: currentRoomId});
     },
 
-
+    // Gets all rooms
     getRooms() {
         return offlineStorage.get('rooms') || [];
     },
 
+    // set the current room
     setCurrentRoom(roomId) {
         offlineStorage.set('currentRoom', roomId);
     }

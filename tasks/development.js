@@ -9,7 +9,6 @@ var backendDirs  = require('./config.js').backendDirs;
 var frontendDirs = require('./config.js').frontendDirs;
 
 
-
 // Transpile ES6 and React Components and
 // resolves dependencies with browserify
 gulp.task('transpile-frontend-js', function() {
