@@ -27,6 +27,7 @@ class ChatMessages extends React.Component {
     }
 
     componentDidMount() {
+        this.componentDidUpdate();
         ChatStore.addChangeListener(function(){
             this.forceUpdate();
         }.bind(this));
@@ -34,6 +35,11 @@ class ChatMessages extends React.Component {
 
     componentWillUnmount() {
         ChatStore.removeChangeListener();
+    }
+
+    componentDidUpdate() {
+        let messages = document.querySelectorAll('.chat-window--messages')[0];
+        messages.scrollTop = messages.scrollHeight;
     }
 
     render() {
